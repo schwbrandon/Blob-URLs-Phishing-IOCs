@@ -1,0 +1,13 @@
+// ============================================================
+// KQL Threat Hunting Query - Blob URI Phishing Detection
+// ============================================================
+
+// Define list of browser executables to filter on
+let BrowserProcesses = pack_array("chrome.exe", "msedge.exe", "firefox.exe", "iexplore.exe", "opera.exe");
+DeviceFileEvents
+| where InitiatingProcessFileName in~ (BrowserProcesses)
+| where 
+    (isnotempty(FileOriginUrl) and FileOriginUrl startswith "blob:") or 
+    (isnotempty(FileOriginReferrerUrl) and FileOriginReferrerUrl startswith "blob:")
+| project Timestamp, DeviceName, InitiatingProcessFileName, FileName, FileSize,
+          FileOriginUrl, FileOriginReferrerUrl, SHA256
