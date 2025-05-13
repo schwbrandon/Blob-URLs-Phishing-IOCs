@@ -1,0 +1,9 @@
+# Blob URI Phishing Campaign IOCs 
+
+# Unique URI Pattern
+blob:https
+
+# Observed Abused Hosting Services (for delivery)
+onedrive[.]live[.]com
+
+# Source: https://cofense.com/blog/using-blob-urls-to-bypass-segs-and-evade-analysis
