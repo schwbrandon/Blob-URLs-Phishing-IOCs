@@ -1,13 +1,24 @@
-// ============================================================
-// KQL Threat Hunting Query - Blob URI Phishing Detection
-// ============================================================
+# ============================================================
+# KQL Threat Hunting Playbook - Blob URI Phishing Campaign
+# ============================================================
 
-// Define list of browser executables to filter on
-let BrowserProcesses = pack_array("chrome.exe", "msedge.exe", "firefox.exe", "iexplore.exe", "opera.exe");
+# 1. Detect blob: URI usage in file downloads
+
 DeviceFileEvents
 | where InitiatingProcessFileName in~ (BrowserProcesses)
-| where 
-    (isnotempty(FileOriginUrl) and FileOriginUrl startswith "blob:") or 
-    (isnotempty(FileOriginReferrerUrl) and FileOriginReferrerUrl startswith "blob:")
+| where FileOriginUrl startswith "blob:" or FileOriginReferrerUrl startswith "blob:"
 | project Timestamp, DeviceName, InitiatingProcessFileName, FileName, FileSize,
           FileOriginUrl, FileOriginReferrerUrl, SHA256
+
+# 2. Detect blob: URIs rendered in browsers
+
+DeviceProcessEvents
+| where InitiatingProcessFileName in~ ("chrome.exe", "msedge.exe", "firefox.exe")
+| where ProcessCommandLine has "blob:https://"
+| project Timestamp, DeviceName, InitiatingProcessFileName, ProcessCommandLine
+
+# 3. Detect access to blob phishing origin domains
+
+DeviceNetworkEvents
+| where RemoteUrl has "britishcounsel.org.in"
+| project Timestamp, DeviceName, InitiatingProcessFileName, RemoteUrl
