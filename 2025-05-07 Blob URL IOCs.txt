@@ -1,9 +1,14 @@
-# Blob URI Phishing Campaign IOCs 
+# Blob URI Phishing Campaign IOCs
 
 # Unique URI Pattern
 blob:https
+
+# Blob URI Origin Domain (Observed in the Wild)
+britishcounsel[.]org.in 
+# VT Analysis: https://www.virustotal.com/gui/url/cf42a69f1a8af478f3fec112f26c0ee8078162a809dbc1b32d6be776aabc0c41/detection
 
 # Observed Abused Hosting Services (for delivery)
 onedrive[.]live[.]com
 
 # Source: https://cofense.com/blog/using-blob-urls-to-bypass-segs-and-evade-analysis
+
